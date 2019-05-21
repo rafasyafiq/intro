@@ -1,22 +1,13 @@
----
-title: "Iterasi"
-author: "Muhammad Aswan Syahputra"
-date: "4/9/2019"
-output:
-  github_document
-editor_options: 
-  chunk_output_type: inline
----
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, message = FALSE)
-```
+Iterasi
+================
+Muhammad Aswan Syahputra
+4/9/2019
 
 Di bahasa pemrograman R, iterasi atau perulangan dapat dilakukan dengan beberapa cara, misalnya menggunakan `for loop`, keluarga `apply` (dari paket `base`), dan keluarga `map` (dari paket `purrr`).
 
 Dalam contoh kasus ini, Anda diminta untuk mengimpor beberapa berkas `csv` secara sekaligus dan membuatnya ke dalam satu dataframe. Aktifkanlah paket yang memiliki fungsi untuk membuka berkas `csv`!
 
-```{r}
+``` r
 library(readr)
 ```
 
@@ -24,31 +15,37 @@ Berkas csv yang akan Anda impor memiliki informasi mengenai data lelang kota Ban
 
 Selain melihat nama berkas secara manual, Anda juga dapat menggunakan fungsi `list.files()` melalui R untuk membuat daftar nama berkas dari suatu direktori. Dapatkah Anda membuat daftar nama berkas yang Akan diimpor dengan menggunakan fungsi tersebut? Gunakan pola penamaan berkas yang telah Anda pelajari sebagai isian untuk argumen `pattern` pada fungsi `list.files`!
 
-```{r}
+``` r
 daftar_berkas <- list.files("../data-raw", pattern = "lelang_bandung", full.names = TRUE)
 daftar_berkas
 ```
 
+    ## character(0)
+
 Anda telah memiliki daftar nama berkas yang akan diimpor. Sekarang Anda akan mempelajari cara membuka berkas tersebut secara sekaligus melalui iterasi.
 
-## For Loop
+For Loop
+--------
 
 Cara pertama yang akan Anda pelajari adalah dengan menggunakan `for loop`. Prinsip dan struktur penggunaannya adalah sebagai berikut:
 
-```
-input <- sesuatu
+    input <- sesuatu
 
-output <- vector(mode, length)      # 1. Output
-for (i in seq_along(output)) {      # 2. Urutan
-  output[[i]] <- fungsi(input[[i]]) # 3. Badan
-}
-output
-```
+    output <- vector(mode, length)      # 1. Output
+    for (i in seq_along(output)) {      # 2. Urutan
+      output[[i]] <- fungsi(input[[i]]) # 3. Badan
+    }
+    output
 
-Dapatkah Anda melengkapi kode berikut untuk mengimpor berkas-berkas csv yang tercatat dalam obyek 'daftar_berkas'? Simpanlah `output` dengan nama `output_for`! Anda juga dapat membuka obyek `output_for` pada konsol untuk dapat melihat struktur data tersebut dengan lebih jelas.
+Dapatkah Anda melengkapi kode berikut untuk mengimpor berkas-berkas csv yang tercatat dalam obyek 'daftar\_berkas'? Simpanlah `output` dengan nama `output_for`! Anda juga dapat membuka obyek `output_for` pada konsol untuk dapat melihat struktur data tersebut dengan lebih jelas.
 
-```{r}
+``` r
 daftar_berkas
+```
+
+    ## character(0)
+
+``` r
 output_for<- vector(mode = "list", length = length(daftar_berkas))
 for (i in seq_along(output_for)) {
   output_for[[i]] <- read.csv(daftar_berkas[[i]])
@@ -56,54 +53,90 @@ for (i in seq_along(output_for)) {
 output_for
 ```
 
-Selamat! Anda telah berhasil mengimpor berkas-berkas csv tersebut. Namun, jika diperhatikan tipe dari obyek 'output_for' adalah berupa list sedangkan yang diinginkan adalah berupa dataframe. Anda dapat menggunakan fungsi `rbind()` untuk menggabungkan dua dataframe, namun pada kasus ini Anda memiliki lima dataframe sehingga fungsi `rbind()` tidak bisa langsung digunakan. Untuk menggabungkan lebih dari dua dataframe, Anda dapat menggunakan bantuan dari fungsi `Reduce` seperti contoh berikut:
+    ## list()
 
-```{r}
+Selamat! Anda telah berhasil mengimpor berkas-berkas csv tersebut. Namun, jika diperhatikan tipe dari obyek 'output\_for' adalah berupa list sedangkan yang diinginkan adalah berupa dataframe. Anda dapat menggunakan fungsi `rbind()` untuk menggabungkan dua dataframe, namun pada kasus ini Anda memiliki lima dataframe sehingga fungsi `rbind()` tidak bisa langsung digunakan. Untuk menggabungkan lebih dari dua dataframe, Anda dapat menggunakan bantuan dari fungsi `Reduce` seperti contoh berikut:
+
+``` r
 typeof(output_for) # cek tipe dari output_for
+```
+
+    ## [1] "list"
+
+``` r
 output_for <- Reduce(rbind, output_for)
 output_for
 ```
 
-## Keluarga `apply`
+    ## NULL
+
+Keluarga `apply`
+----------------
 
 Sekarang Anda akan menggunakan jenis iterasi yang umumnya digunakan di R, yaitu menggunakan keluarga `apply` (`apply`, `lapply`, `sapply`, `vapply`, dan seterusnya). Dalam contoh ini Anda akan menggunakan fungsi `lapply()` dengan struktur penulisan seperti berikut:
 
-```
-input <- sesuatu
-output <- lapply(input, nama_fungsi)
-```
+    input <- sesuatu
+    output <- lapply(input, nama_fungsi)
 
 Silakan lengkapi kode berikut untuk mengimpor berkas csv dengan menggunakan fungsi `lapply()`! Simpanlah `output` dengan nama `output_lapply`.
 
-```{r}
+``` r
 daftar_berkas
+```
+
+    ## character(0)
+
+``` r
 output_lapply <- lapply(daftar_berkas, read_csv)
 output_lapply
 ```
 
+    ## list()
+
 Dapatkah Anda memeriksa jenis dari obyek `output_lapply`? Tuliskanlah kode untuk mengubah `output_lapply` menjadi satu dataframe dan simpanlah hasilnya dengan nama `output_lapply`!
 
-```{r}
+``` r
 typeof # cek jenis dari output_lapply
+```
+
+    ## function (x) 
+    ## .Internal(typeof(x))
+    ## <bytecode: 0x7fcdc830a400>
+    ## <environment: namespace:base>
+
+``` r
 output_lapply <- Reduce(rbind, output_lapply)
 output_lapply
 ```
 
-## Keluarga `map`
+    ## NULL
+
+Keluarga `map`
+--------------
 
 Terakhir, Anda akan melakukan impor data dengan menggunakan keluarga `map` dari paket `purrr`. Adapun fungsi yang akan digunakan adalah `map_dfr` (silakan baca dokumentasi dengan menjalankan `?map_dfr`). Struktur penulisan kode di keluarga `map` serupa dengan penulisan kode di keluarga `apply`, yaitu sebagai berikut:
 
-```
-input <- sesuatu
-output <- lapply(input, nama_fungsi)
-```
+    input <- sesuatu
+    output <- lapply(input, nama_fungsi)
 
 Lengkapi kode berikut untuk mengimpor berkas csv dengan menggunakan `map_dfr` dan simpanlah `output` dengan nama `output_map`. Dapatkah Anda menemukan perbedaan antara hasil dari fungsi `map_dfr` dengan `for loop` dan `lapply` pada contoh sebelumnya? Jalankan `class()` pada `output_map`. Mengapa kita tidak perlu menggunakan `rbind` dan `Reduce`?
 
-```{r}
+``` r
 library(purrr) # aktifkan paket purrr
 daftar_berkas
+```
+
+    ## character(0)
+
+``` r
 output_map <- map_dfr(daftar_berkas, read.csv)
 output_map
+```
+
+    ## # A tibble: 0 x 0
+
+``` r
 class(output_map)
 ```
+
+    ## [1] "tbl_df"     "tbl"        "data.frame"
