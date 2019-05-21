@@ -25,7 +25,7 @@ Berkas csv yang akan Anda impor memiliki informasi mengenai data lelang kota Ban
 Selain melihat nama berkas secara manual, Anda juga dapat menggunakan fungsi `list.files()` melalui R untuk membuat daftar nama berkas dari suatu direktori. Dapatkah Anda membuat daftar nama berkas yang Akan diimpor dengan menggunakan fungsi tersebut? Gunakan pola penamaan berkas yang telah Anda pelajari sebagai isian untuk argumen `pattern` pada fungsi `list.files`!
 
 ```{r}
-daftar_berkas <- list.files("../data-raw", pattern = "lelang_bandung", full.names = TRUE)
+daftar_berkas <- list.files("../data-raw", pattern = "lelang-bandung", full.names = TRUE)
 daftar_berkas
 ```
 
