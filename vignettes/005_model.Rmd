@@ -86,6 +86,7 @@ ggplot(model1_vals_broom, aes(x = bty_avg, y = score)) +
   geom_jitter() +
   geom_line(aes(y = .fitted))
 
+
 # menggunakan paket modelr
 model1_vals_modelr <- 
   evals %>% 
